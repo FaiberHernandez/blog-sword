@@ -25,6 +25,7 @@ namespace api.Infrastructure.Models
         public virtual User User { get; set; } = default!;
         public virtual Post Post { get; set; } = default!;
         public virtual Comment? ParentComment { get; set; }
+        [InverseProperty(nameof(ParentComment))]
         public virtual ICollection<Comment> Replies { get; set; }
         public virtual ICollection<CommentInteraction> CommentInteractions { get; set; } 
     }

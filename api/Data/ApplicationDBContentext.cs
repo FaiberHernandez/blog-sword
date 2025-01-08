@@ -24,8 +24,34 @@ namespace api.Data
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<UserPermission>().HasKey(up => new { up.UserId, up.PermissionId });
-            builder.Entity<RolePermissions>().HasKey(rp => new { rp.RoleId, rp.PermissionId });
+            builder.Entity<UserPermission>()
+                .HasKey(up => new { up.UserId, up.PermissionId });
+            builder.Entity<RolePermissions>()
+                .HasKey(rp => new { rp.RoleId, rp.PermissionId });
+
+            builder.Entity<Comment>()
+                .HasOne(c => c.ParentComment)
+                .WithMany(c => c.Replies)
+                .HasForeignKey(c => c.ParentCommentId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Comment>()
+                .HasOne(c => c.Post)
+                .WithMany(p => p.Comments)
+                .HasForeignKey(c => c.PostId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<PostInteraction>()
+                .HasOne(c => c.Post)
+                .WithMany(p => p.PostInteractions)
+                .HasForeignKey(c => c.PostId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<CommentInteraction>()
+                .HasOne(c => c.Comment)
+                .WithMany(p => p.CommentInteractions)
+                .HasForeignKey(c => c.CommentId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
 
     }
