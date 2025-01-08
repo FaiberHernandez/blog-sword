@@ -1,4 +1,5 @@
 using api.Infrastructure;
+using api.Infrastructure.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,13 +11,15 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(); // Habilitar la interfaz de Swagger
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<HttpGlobalErrorHandlerMiddleware>();
 
 app.MapControllers();
 

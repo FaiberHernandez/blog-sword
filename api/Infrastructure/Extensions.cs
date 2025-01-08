@@ -1,5 +1,7 @@
 using System.Text;
 using api.Data;
+using api.Infrastructure.Managers;
+using api.Infrastructure.Managers.Interfaces;
 using api.Infrastructure.Models;
 using api.Infrastructure.Repositories;
 using api.Infrastructure.Repositories.Interfaces;
@@ -94,6 +96,8 @@ namespace api.Infrastructure
             //Dependency Injection
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IAuthManager, AuthManager>();
         }
     }
 }
