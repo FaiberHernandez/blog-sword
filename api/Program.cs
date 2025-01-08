@@ -1,27 +1,8 @@
-using api.Data;
-using api.Infrastructure.Models;
-using Microsoft.EntityFrameworkCore;
-
+using api.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Agregar servicios necesarios para Swagger
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
-
-builder.Services.AddIdentity<User, Role>(options => {
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireUppercase = true;
-    options.Password.RequireNonAlphanumeric = true;
-    options.Password.RequiredLength = 12;
-})
-.AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
@@ -35,5 +16,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
 
 app.Run();
