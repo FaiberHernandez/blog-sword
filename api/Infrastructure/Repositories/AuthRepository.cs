@@ -7,9 +7,20 @@ namespace api.Infrastructure.Repositories
     public class AuthRepository : IAuthRepository
     {
         private readonly UserManager<User> _userManager;
-        public AuthRepository(UserManager<User> userManager)
+        private readonly SignInManager<User> _signInManager;
+        public AuthRepository(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
+        }
+
+        public async Task<User?> LoginUserAsync(string email, string password)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null) return null;
+            var result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
+            if (!result.Succeeded) return null;
+            return user;
         }
 
         public async Task<IdentityResult> RegisterUserAsync(User user, string password)
@@ -26,5 +37,6 @@ namespace api.Infrastructure.Repositories
 
             return createdUser;
         }
+ 
     }
 }

@@ -3,7 +3,6 @@ using api.Infrastructure.Managers.Interfaces;
 using api.Infrastructure.Models;
 using api.Infrastructure.Repositories.Interfaces;
 using api.Infrastructure.services.Interfaces;
-using Microsoft.AspNetCore.Identity;
 
 namespace api.Infrastructure.Managers
 {
@@ -11,13 +10,27 @@ namespace api.Infrastructure.Managers
     {
         private readonly IAuthRepository _authRepository;
         private readonly ITokenService _tokenService;
-        private readonly SignInManager<User> _signInManager;
         
-        public AuthManager(IAuthRepository authRepository, ITokenService tokenService, SignInManager<User> signInManager)
+        public AuthManager(IAuthRepository authRepository, ITokenService tokenService)
         {
             _authRepository = authRepository;
             _tokenService = tokenService;
-            _signInManager = signInManager;
+        }
+
+        public async Task<NewUserDto> LoginUserAsync(LoginUserDto loginUserDto)
+        {
+            var user = await _authRepository.LoginUserAsync(loginUserDto.Email, loginUserDto.Password);
+            
+            if(user == null) {
+                throw new Exception("Invalid email and/or password.");
+            }
+
+            return new NewUserDto
+            {
+                Email = loginUserDto.Email,
+                UserId = user.Id,
+                Token = await _tokenService.GenerateToken(user)
+            };
         }
 
         public async Task<NewUserDto> RegisterUserAsync(RegisterUserDto newUserDto)

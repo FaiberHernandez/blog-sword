@@ -23,6 +23,14 @@ namespace api.Controllers
             var newUser = await _authManager.RegisterUserAsync(newUserDto);
             return Ok(newUser);
         }
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> LoginUserAsync([FromBody] LoginUserDto loginUserDto)
+        {
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+            var user = await _authManager.LoginUserAsync(loginUserDto);
+            return Ok(user);
+        }
         
     }
 }

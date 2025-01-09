@@ -6,5 +6,6 @@ namespace api.Infrastructure.Repositories.Interfaces
     public interface IAuthRepository
     {
         Task<IdentityResult> RegisterUserAsync(User user, string password);
+        Task<User?> LoginUserAsync(string email, string password);
     }
 }
