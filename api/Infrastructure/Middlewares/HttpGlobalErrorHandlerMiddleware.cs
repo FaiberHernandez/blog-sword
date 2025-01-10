@@ -1,4 +1,5 @@
 using System.Net;
+using api.Infrastructure.Exceptions;
 
 namespace api.Infrastructure.Middlewares
 {
@@ -18,18 +19,22 @@ namespace api.Infrastructure.Middlewares
             {
                 await _next(context);
             }
+            catch (HttpStatusCodeException ex)
+            {
+                await HandleExceptionAsync(context, ex.StatusCode, ex.Message);
+            }
             catch (Exception ex)
             {
-                await HandleExceptionAsync(context, ex);
+                await HandleExceptionAsync(context, HttpStatusCode.InternalServerError, ex.Message);
             }
         }
 
-        private Task HandleExceptionAsync(HttpContext context, Exception ex)
+        private Task HandleExceptionAsync(HttpContext context, HttpStatusCode statusCode, string message)
         {
-            _logger.LogError(ex, ex.Message);
-            var response = new { Message = ex.Message };
+            _logger.LogError(message);
+            var response = new { Message = message };
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+            context.Response.StatusCode = (int)statusCode;
 
             return context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(response));
         }

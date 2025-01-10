@@ -1,4 +1,6 @@
+using System.Net;
 using api.Infrastructure.Dtos.Auth;
+using api.Infrastructure.Exceptions;
 using api.Infrastructure.Managers.Interfaces;
 using api.Infrastructure.Models;
 using api.Infrastructure.Repositories.Interfaces;
@@ -22,7 +24,7 @@ namespace api.Infrastructure.Managers
             var user = await _authRepository.LoginUserAsync(loginUserDto.Email, loginUserDto.Password);
             
             if(user == null) {
-                throw new Exception("Invalid email and/or password.");
+                throw new HttpStatusCodeException(HttpStatusCode.Unauthorized, "Invalid credentials");
             }
 
             return new NewUserDto
