@@ -91,8 +91,8 @@ namespace api.Infrastructure
                     ValidAudience = configuration["JWT:Audience"],
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]!)),
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero
+                    /*ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero*/
                 };
             });
 
