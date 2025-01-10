@@ -30,7 +30,7 @@ namespace api.Controllers
             if(!ModelState.IsValid) return BadRequest(ModelState);
             var user = await _authManager.LoginUserAsync(loginUserDto);
             return Ok(user);
-        }
+        }  
         
     }
 }
