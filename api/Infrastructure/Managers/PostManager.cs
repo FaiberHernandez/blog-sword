@@ -14,7 +14,7 @@ namespace api.Infrastructure.Managers
             _postRepository = postRepository;
         }
 
-        public async Task<int> CreatePost(CreatePostDto post, string userId)
+        public async Task<int> CreatePostAsync(CreatePostDto post, string userId)
         {
             var newPost = new Post
             {

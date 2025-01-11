@@ -23,7 +23,7 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var userId = User.GetClaimValue(TokenClaims.UserId);
-            var newPostId = await _postManager.CreatePost(post, userId);
+            var newPostId = await _postManager.CreatePostAsync(post, userId);
             return Ok(newPostId);
         }
     }

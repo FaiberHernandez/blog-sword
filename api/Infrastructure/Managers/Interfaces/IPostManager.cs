@@ -4,6 +4,6 @@ namespace api.Infrastructure.Managers.Interfaces
 {
     public interface IPostManager
     {
-        Task<int> CreatePost(CreatePostDto post, string userId);
+        Task<int> CreatePostAsync(CreatePostDto post, string userId);
     }
 }

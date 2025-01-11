@@ -104,6 +104,8 @@ namespace api.Infrastructure
             services.AddScoped<IAuthManager, AuthManager>();
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IPostManager, PostManager>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<ICommentManager, CommentManager>();
         }
 
         public static string GetClaimValue(this ClaimsPrincipal userClaimsPrincipal, string claimType)
