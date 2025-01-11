@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using api.Data;
 using api.Infrastructure.Managers;
@@ -101,6 +102,16 @@ namespace api.Infrastructure
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IAuthManager, AuthManager>();
+            services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IPostManager, PostManager>();
         }
+
+        public static string GetClaimValue(this ClaimsPrincipal userClaimsPrincipal, string claimType)
+        {
+            return (from claim in userClaimsPrincipal.Claims
+                    where claim.Type.Equals(claimType, StringComparison.InvariantCultureIgnoreCase)
+                    select claim.Value).FirstOrDefault()!;
+        }
+
     }
 }
