@@ -42,7 +42,8 @@ namespace api.Controllers
         [Authorize]
         public async Task<IActionResult> RemovePostInteractionAsync([FromRoute] int postInteractionId)
         {
-            await _interactionManager.RemovePostInteraction(postInteractionId);
+            var userId = User.GetClaimValue(TokenClaims.UserId);
+            await _interactionManager.RemovePostInteraction(postInteractionId, userId);
             return NoContent();
         }
     }

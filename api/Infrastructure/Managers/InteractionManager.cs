@@ -39,10 +39,12 @@ namespace api.Infrastructure.Managers
             return newLikePostInteraction.Id;
         }
 
-        public async Task RemovePostInteraction(int postInteractionId)
+        public async Task RemovePostInteraction(int postInteractionId, string userId)
         {
             var postInteraction = await _interactionRepository.GetPostInteractionByIdAsync(postInteractionId);
             if (postInteraction == null) throw new Exception("Post interaction not exists");
+
+            if (postInteraction.UserId != userId) throw new Exception("User not allowed to remove this interaction");
             
             await _interactionRepository.RemovePostInteraction(postInteraction);
         }
