@@ -20,7 +20,8 @@ namespace api.Infrastructure.Managers
             {
                 Content = comment.Content,
                 UserId = userId,
-                PostId = postId
+                PostId = postId,
+                ParentCommentId = comment.ParentCommentId
             };
 
             _commentRepository.CreateComment(newComment);
