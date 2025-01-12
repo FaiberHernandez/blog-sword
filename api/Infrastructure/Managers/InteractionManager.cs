@@ -38,5 +38,13 @@ namespace api.Infrastructure.Managers
 
             return newLikePostInteraction.Id;
         }
+
+        public async Task RemovePostInteraction(int postInteractionId)
+        {
+            var postInteraction = await _interactionRepository.GetPostInteractionByIdAsync(postInteractionId);
+            if (postInteraction == null) throw new Exception("Post interaction not exists");
+            
+            await _interactionRepository.RemovePostInteraction(postInteraction);
+        }
     }
 }

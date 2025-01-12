@@ -29,7 +29,16 @@ namespace api.Infrastructure.Repositories
             return await _context.InteractionTypes.FirstOrDefaultAsync(x => x.Code == code);
         }
 
-        
+        public async Task<PostInteraction?> GetPostInteractionByIdAsync(int postInteractionId)
+        {
+            return await _context.PostInteractions.FirstOrDefaultAsync(x => x.Id == postInteractionId);
+        }
+
+        public async Task RemovePostInteraction(PostInteraction postInteraction)
+        {
+            _context.PostInteractions.Remove(postInteraction);
+            await _context.SaveChangesAsync();
+        }
 
         public async Task SaveChangesAsync()
         {

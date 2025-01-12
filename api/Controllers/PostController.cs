@@ -37,5 +37,13 @@ namespace api.Controllers
             var newPostInteractionId = await _interactionManager.LikePostAsync(postId, userId);
             return Ok(newPostInteractionId);
         }
+
+        [HttpDelete("interaction/{postInteractionId:int}")]
+        [Authorize]
+        public async Task<IActionResult> RemovePostInteractionAsync([FromRoute] int postInteractionId)
+        {
+            await _interactionManager.RemovePostInteraction(postInteractionId);
+            return NoContent();
+        }
     }
 }
