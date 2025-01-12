@@ -18,6 +18,11 @@ namespace api.Infrastructure.Repositories
             _context.Posts.Add(post);
         }
 
+        public async Task<Post?> GetPostByIdAsync(int postId)
+        {
+            return  await _context.Posts.FindAsync(postId);
+        }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
