@@ -11,10 +11,12 @@ namespace api.Controllers
     public class PostController : ControllerBase
     {
         private readonly IPostManager _postManager;
+        private readonly IInteractionManager _interactionManager;
 
-        public PostController(IPostManager postManager)
+        public PostController(IPostManager postManager, IInteractionManager interactionManager)
         {
             _postManager = postManager;
+            _interactionManager = interactionManager;
         }
 
         [HttpPost]
@@ -25,6 +27,15 @@ namespace api.Controllers
             var userId = User.GetClaimValue(TokenClaims.UserId);
             var newPostId = await _postManager.CreatePostAsync(post, userId);
             return Ok(newPostId);
+        }
+
+        [HttpPost("{postId:int}/like")]
+        [Authorize]
+        public async Task<IActionResult> LikePostAsync([FromRoute] int postId)
+        {
+            var userId = User.GetClaimValue(TokenClaims.UserId);
+            var newPostInteractionId = await _interactionManager.LikePostAsync(postId, userId);
+            return Ok(newPostInteractionId);
         }
     }
 }
