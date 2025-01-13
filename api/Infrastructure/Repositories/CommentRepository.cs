@@ -18,6 +18,11 @@ namespace api.Infrastructure.Repositories
             _context.Comments.Add(comment);
         }
 
+        public async Task<Comment?> GetCommentByIdAsync(int commentId)
+        {
+            return await _context.Comments.FindAsync(commentId);
+        }
+
         public async Task SaveChangesAsync()
         {
            await _context.SaveChangesAsync();

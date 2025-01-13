@@ -8,10 +8,37 @@ namespace api.Infrastructure.Managers
     {
         private readonly IInteractionRepository _interactionRepository;
         private readonly IPostRepository _postRepository;
-        public InteractionManager(IInteractionRepository interactionRepository, IPostRepository postRepository)
+        private readonly ICommentRepository _commentRepository;
+        public InteractionManager(IInteractionRepository interactionRepository, IPostRepository postRepository, ICommentRepository commentRepository)
         {
             _interactionRepository = interactionRepository;
             _postRepository = postRepository;
+            _commentRepository = commentRepository;
+        }
+
+        public async Task<int> LikeCommentAsync(int commentId, string userId)
+        {
+            var comment = await _commentRepository.GetCommentByIdAsync(commentId);
+            if (comment == null) throw new Exception("Comment not exists");
+
+            var likeInteraction = await _interactionRepository.GetInteractionTypeByCodeAsync(InteractionTypes.Like);
+            if (likeInteraction == null) throw new Exception("Interaction type Like not exists");
+
+            var userHasLike = await _interactionRepository.CheckIfUserHasCommentInteractionAsync(commentId, userId, likeInteraction.Id);
+            if (userHasLike) throw new Exception("User already liked this comment");
+
+            var newLikeCommentInteraction = new CommentInteraction
+            {
+                CommentId = commentId,
+                UserId = userId,
+                Value = "1",
+                InteractionTypeId = likeInteraction.Id
+            };
+
+            _interactionRepository.AddCommentInteraction(newLikeCommentInteraction);
+            await _interactionRepository.SaveChangesAsync();
+
+            return newLikeCommentInteraction.Id;
         }
 
         public async Task<int> LikePostAsync(int postId, string userId)
@@ -64,6 +91,16 @@ namespace api.Infrastructure.Managers
             await _interactionRepository.SaveChangesAsync();
 
             return newRatePostInteraction.Id;
+        }
+
+        public async Task RemoveCommentInteraction(int commentInteractionId, string userId)
+        {
+            var commentInteraction = await _interactionRepository.GetCommentInteractionByIdAsync(commentInteractionId);
+            if (commentInteraction == null) throw new Exception("Comment interaction not exists");
+
+            if (commentInteraction.UserId != userId) throw new Exception("User not allowed to remove this interaction");
+
+            await _interactionRepository.RemoveCommentInteraction(commentInteraction);
         }
 
         public async Task RemovePostInteraction(int postInteractionId, string userId)
