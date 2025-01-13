@@ -56,6 +56,16 @@ namespace api.Controllers
             var newPostInteractionId = await _interactionManager.RatePostAsync(postId, userId, ratePost.Rate);
             return Ok(newPostInteractionId);
         }
+
+        [HttpPut("{postId:int}")]
+        [Authorize]
+        public async Task<IActionResult> UpdatePostAsync([FromRoute] int postId, [FromBody] CreatePostDto post)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var userId = User.GetClaimValue(TokenClaims.UserId);
+            await _postManager.UpdatePostAsync(post, postId, userId);
+            return NoContent();
+        }
         
     }
 }

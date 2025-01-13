@@ -28,5 +28,18 @@ namespace api.Infrastructure.Managers
 
             return newPost.Id;
         }
+
+        public async Task UpdatePostAsync(CreatePostDto postUpdate, int postId, string userId)
+        {
+            var post = await _postRepository.GetPostByIdAsync(postId);
+            if(post == null) throw new Exception("Post not found");
+
+            if(post.UserId != userId) throw new Exception("User is not the owner of the post");
+
+            post.Title = postUpdate.Title;
+            post.Content = postUpdate.Content;
+
+            await _postRepository.SaveChangesAsync();
+        }
     }
 }
