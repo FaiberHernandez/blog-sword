@@ -39,6 +39,33 @@ namespace api.Infrastructure.Managers
             return newLikePostInteraction.Id;
         }
 
+        public async Task<int> RatePostAsync(int postId, string userId, int rate)
+        {
+            if (rate < 1 || rate > 5) throw new Exception("Rate must be between 1 and 5");
+            
+            var post = await _postRepository.GetPostByIdAsync(postId);
+            if (post == null) throw new Exception("Post not exists");
+
+            var rateInteraction = await _interactionRepository.GetInteractionTypeByCodeAsync(InteractionTypes.Rate);
+            if (rateInteraction == null) throw new Exception("Interaction type Rate not exists");
+
+            var userHasRate = await _interactionRepository.CheckIfUserHasPostInteractionAsync(postId, userId, rateInteraction.Id);
+            if (userHasRate) throw new Exception("User already rated this post");
+
+            var newRatePostInteraction = new PostInteraction
+            {
+                PostId = postId,
+                UserId = userId,
+                Value = rate.ToString(),
+                InteractionTypeId = rateInteraction.Id
+            };
+
+            _interactionRepository.AddPostInteraction(newRatePostInteraction);
+            await _interactionRepository.SaveChangesAsync();
+
+            return newRatePostInteraction.Id;
+        }
+
         public async Task RemovePostInteraction(int postInteractionId, string userId)
         {
             var postInteraction = await _interactionRepository.GetPostInteractionByIdAsync(postInteractionId);
@@ -47,6 +74,6 @@ namespace api.Infrastructure.Managers
             if (postInteraction.UserId != userId) throw new Exception("User not allowed to remove this interaction");
             
             await _interactionRepository.RemovePostInteraction(postInteraction);
-        }
+        }        
     }
 }
