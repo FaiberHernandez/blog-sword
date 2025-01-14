@@ -45,5 +45,15 @@ namespace api.Controllers
             await _interactionManager.RemoveCommentInteraction(commentInteractionId, userId);
             return NoContent();
         }
+
+        [HttpPut("{commentId:int}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateCommentAsync([FromBody] CreateCommentDto comment, int commentId)
+        {
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+            var userId = User.GetClaimValue(TokenClaims.UserId);
+            await _commentManager.UpdateCommentAsync(comment, commentId, userId);
+            return NoContent();
+        }
     }
 }
