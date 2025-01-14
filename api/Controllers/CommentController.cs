@@ -55,5 +55,14 @@ namespace api.Controllers
             await _commentManager.UpdateCommentAsync(comment, commentId, userId);
             return NoContent();
         }
+
+        [HttpDelete("{commentId:int}")]
+        [Authorize]
+        public async Task<IActionResult> RemoveCommentAsync(int commentId)
+        {
+            var userId = User.GetClaimValue(TokenClaims.UserId);
+            await _commentManager.RemoveCommentAsync(commentId, userId);
+            return NoContent();
+        }
     }
 }

@@ -55,6 +55,11 @@ namespace api.Infrastructure.Repositories
             return _context.SaveChangesAsync();
         }
 
+        public void RemoveCommentInteractions(ICollection<CommentInteraction> commentInteractions)
+        {
+             _context.CommentInteractions.RemoveRange(commentInteractions);
+        }
+
         public async Task RemovePostInteraction(PostInteraction postInteraction)
         {
             _context.PostInteractions.Remove(postInteraction);
