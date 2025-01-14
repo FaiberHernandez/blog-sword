@@ -6,6 +6,8 @@ namespace api.Infrastructure.Repositories.Interfaces
     {
         void CreateComment(Comment comment);
         Task<Comment?> GetCommentByIdAsync(int commentId);
+        Task RemoveCommentAsync(Comment comment);
+        void RemoveComments(ICollection<Comment> comments);
         Task SaveChangesAsync();
     }
 }

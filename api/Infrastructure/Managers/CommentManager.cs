@@ -8,10 +8,12 @@ namespace api.Infrastructure.Managers
     public class CommentManager : ICommentManager
     {
         private readonly ICommentRepository _commentRepository;
+        private readonly IInteractionRepository _interactionRepository;
 
-        public CommentManager(ICommentRepository commentRepository)
+        public CommentManager(ICommentRepository commentRepository, IInteractionRepository interactionRepository)
         {
             _commentRepository = commentRepository;
+            _interactionRepository = interactionRepository;
         }
 
         public async Task<int> CreateCommentAsync(CreateCommentDto comment, string userId, int postId)
@@ -28,6 +30,26 @@ namespace api.Infrastructure.Managers
             await _commentRepository.SaveChangesAsync();
 
             return newComment.Id;
+        }
+
+        public async Task RemoveCommentAsync(int commentId, string userId)
+        {
+            var commentToRemove = await _commentRepository.GetCommentByIdAsync(commentId);
+            if(commentToRemove == null) throw new Exception("Comment not found");
+
+            if(commentToRemove.UserId != userId) throw new Exception("User is not the owner of the comment");
+
+            if(commentToRemove.CommentInteractions.Any()) {
+                _interactionRepository.RemoveCommentInteractions(commentToRemove.CommentInteractions);
+            }
+
+            if(commentToRemove.Replies.Any()) {
+                var repliesInteractions = commentToRemove.Replies.SelectMany(r => r.CommentInteractions).ToList();
+                _interactionRepository.RemoveCommentInteractions(repliesInteractions);
+                _commentRepository.RemoveComments(commentToRemove.Replies);
+            }
+
+            await _commentRepository.RemoveCommentAsync(commentToRemove);
         }
 
         public async Task UpdateCommentAsync(CreateCommentDto comment, int commentId, string userId)

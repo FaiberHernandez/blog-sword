@@ -1,6 +1,7 @@
 using api.Data;
 using api.Infrastructure.Models;
 using api.Infrastructure.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Infrastructure.Repositories
 {
@@ -20,7 +21,18 @@ namespace api.Infrastructure.Repositories
 
         public async Task<Comment?> GetCommentByIdAsync(int commentId)
         {
-            return await _context.Comments.FindAsync(commentId);
+            return await _context.Comments.Include(c => c.Replies).ThenInclude(r => r.CommentInteractions).Include(c => c.CommentInteractions).FirstOrDefaultAsync(c => c.Id == commentId);
+        }
+
+        public async Task RemoveCommentAsync(Comment comment)
+        {
+            _context.Comments.Remove(comment);
+            await _context.SaveChangesAsync();
+        }
+
+        public void RemoveComments(ICollection<Comment> comments)
+        {
+            _context.Comments.RemoveRange(comments);
         }
 
         public async Task SaveChangesAsync()
