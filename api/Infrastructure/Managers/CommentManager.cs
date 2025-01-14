@@ -29,5 +29,17 @@ namespace api.Infrastructure.Managers
 
             return newComment.Id;
         }
+
+        public async Task UpdateCommentAsync(CreateCommentDto comment, int commentId, string userId)
+        {
+            var commentToUpdate = await _commentRepository.GetCommentByIdAsync(commentId);
+            if(commentToUpdate == null) throw new Exception("Comment not found");
+
+            if(commentToUpdate.UserId != userId) throw new Exception("User is not the owner of the comment");
+
+            commentToUpdate.Content = comment.Content;
+
+            await _commentRepository.SaveChangesAsync();
+        }
     }
 }
