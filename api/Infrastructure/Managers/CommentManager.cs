@@ -23,7 +23,7 @@ namespace api.Infrastructure.Managers
                 Content = comment.Content,
                 UserId = userId,
                 PostId = postId,
-                ParentCommentId = comment.ParentCommentId
+                ParentCommentId = await GetParentCommentIdAsync(comment.ParentCommentId)
             };
 
             _commentRepository.CreateComment(newComment);
@@ -32,9 +32,19 @@ namespace api.Infrastructure.Managers
             return newComment.Id;
         }
 
+        private async Task<int?> GetParentCommentIdAsync(int? parentCommentId)
+        {
+            if (!parentCommentId.HasValue) return null;
+
+            var parentComment = await _commentRepository.GetCommentByIdAsync(parentCommentId.Value);
+            if (parentComment == null) throw new Exception("Parent comment not found");
+
+            return parentComment.ParentCommentId ?? parentComment.Id;
+        }
+
         public async Task RemoveCommentAsync(int commentId, string userId)
         {
-            var commentToRemove = await _commentRepository.GetCommentByIdAsync(commentId);
+            var commentToRemove = await _commentRepository.GetCommentToDeleteByIdAsync(commentId);
             if(commentToRemove == null) throw new Exception("Comment not found");
 
             if(commentToRemove.UserId != userId) throw new Exception("User is not the owner of the comment");
@@ -54,7 +64,7 @@ namespace api.Infrastructure.Managers
 
         public async Task UpdateCommentAsync(CreateCommentDto comment, int commentId, string userId)
         {
-            var commentToUpdate = await _commentRepository.GetCommentByIdAsync(commentId);
+            var commentToUpdate = await _commentRepository.GetCommentToDeleteByIdAsync(commentId);
             if(commentToUpdate == null) throw new Exception("Comment not found");
 
             if(commentToUpdate.UserId != userId) throw new Exception("User is not the owner of the comment");

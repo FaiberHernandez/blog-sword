@@ -21,6 +21,11 @@ namespace api.Infrastructure.Repositories
 
         public async Task<Comment?> GetCommentByIdAsync(int commentId)
         {
+            return await _context.Comments.FindAsync(commentId);
+        }
+
+        public async Task<Comment?> GetCommentToDeleteByIdAsync(int commentId)
+        {
             return await _context.Comments.Include(c => c.Replies).ThenInclude(r => r.CommentInteractions).Include(c => c.CommentInteractions).FirstOrDefaultAsync(c => c.Id == commentId);
         }
 
