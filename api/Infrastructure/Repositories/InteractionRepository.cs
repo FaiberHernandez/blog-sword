@@ -66,6 +66,11 @@ namespace api.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public void RemovePostInteractions(ICollection<PostInteraction> postInteractions)
+        {
+            _context.PostInteractions.RemoveRange(postInteractions);
+        }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();

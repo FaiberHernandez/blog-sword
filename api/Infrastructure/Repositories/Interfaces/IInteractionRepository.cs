@@ -6,7 +6,8 @@ namespace api.Infrastructure.Repositories.Interfaces
     {
         void AddPostInteraction(PostInteraction postInteraction);
         void AddCommentInteraction(CommentInteraction commentInteraction);
-        Task RemovePostInteraction(PostInteraction postInteraction); 
+        Task RemovePostInteraction(PostInteraction postInteraction);
+        void RemovePostInteractions(ICollection<PostInteraction> postInteractions);
         Task RemoveCommentInteraction(CommentInteraction commentInteraction);
         void RemoveCommentInteractions(ICollection<CommentInteraction> commentInteractions);
         Task<InteractionType?> GetInteractionTypeByCodeAsync(string code);
