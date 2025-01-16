@@ -6,5 +6,6 @@ namespace api.Infrastructure.Managers.Interfaces
     {
         Task<int> CreatePostAsync(CreatePostDto post, string userId);
         Task UpdatePostAsync(CreatePostDto postUpdate, int postId, string userId);
+        Task RemovePostAsync(int postId, string userId);
     }
 }

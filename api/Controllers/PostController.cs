@@ -66,6 +66,14 @@ namespace api.Controllers
             await _postManager.UpdatePostAsync(post, postId, userId);
             return NoContent();
         }
-        
+
+        [HttpDelete("{postId:int}")]
+        [Authorize]
+        public async Task<IActionResult> RemovePostAsync([FromRoute] int postId)
+        {
+            var userId = User.GetClaimValue(TokenClaims.UserId);
+            await _postManager.RemovePostAsync(postId, userId);
+            return NoContent();
+        }
     }
 }

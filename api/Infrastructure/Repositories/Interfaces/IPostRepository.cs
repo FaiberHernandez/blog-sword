@@ -6,6 +6,8 @@ namespace api.Infrastructure.Repositories.Interfaces
     {
         void CreatePost(Post post);
         Task<Post?> GetPostByIdAsync(int postId);
+        Task<Post?> GetPostToDeleteByIdAsync(int postId);
+        Task RemovePostAsync(Post post);
         Task SaveChangesAsync();
     }
 }
