@@ -111,6 +111,20 @@ namespace api.Infrastructure.Managers
             if (postInteraction.UserId != userId) throw new Exception("User not allowed to remove this interaction");
             
             await _interactionRepository.RemovePostInteraction(postInteraction);
-        }        
+        }
+
+        public async Task UpdatePostRateAsync(int postRateId, string userId, int rate)
+        {
+            if (rate < 1 || rate > 5) throw new Exception("Rate must be between 1 and 5");
+
+            var postInteraction = await _interactionRepository.GetPostInteractionByIdAsync(postRateId);
+            if (postInteraction == null) throw new Exception("Post interaction not exists");
+
+            if (postInteraction.UserId != userId) throw new Exception("User not allowed to update this interaction");
+
+            postInteraction.Value = rate.ToString();
+
+            await _interactionRepository.SaveChangesAsync();
+        }
     }
 }

@@ -57,6 +57,16 @@ namespace api.Controllers
             return Ok(newPostInteractionId);
         }
 
+        [HttpPut("rate/{postRateId:int}")]
+        [Authorize]
+        public async Task<IActionResult> UpdatePostRateAsync([FromRoute] int postRateId, [FromBody] RatePostRequestDto ratePost)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var userId = User.GetClaimValue(TokenClaims.UserId);
+            await _interactionManager.UpdatePostRateAsync(postRateId, userId, ratePost.Rate);
+            return NoContent();
+        }
+
         [HttpPut("{postId:int}")]
         [Authorize]
         public async Task<IActionResult> UpdatePostAsync([FromRoute] int postId, [FromBody] CreatePostDto post)
